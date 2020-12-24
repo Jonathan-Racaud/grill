@@ -4,15 +4,15 @@ namespace Grill
 {
 	public class PackageVersion
 	{
-		public readonly int Major;
-		public readonly int Minor;
-		public readonly int Patch;
+		public int Major;
+		public int Minor;
+		public int Patch;
 
-		public this()
+		public this(int major = 0, int minor = 0, int patch = 0)
 		{
-			Major = 0;
-			Minor = 0;
-			Patch = 0;
+			Major = major;
+			Minor = minor;
+			Patch = patch;
 		}
 
 		public this(StringView version)
@@ -21,13 +21,6 @@ namespace Grill
 			Major = int.Parse(numbers.GetNext());
 			Minor = int.Parse(numbers.GetNext());
 			Patch = int.Parse(numbers.GetNext());
-		}
-
-		public this(int major, int minor, int patch)
-		{
-			Major = major;
-			Minor = minor;
-			Patch = patch;
 		}
 
 		public bool IsGreaterThan(PackageVersion other)

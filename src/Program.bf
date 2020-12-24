@@ -1,49 +1,54 @@
-using CowieCLI;
-using Grill.Commands;
 using System;
 using System.Collections;
 using System.Reflection;
 using System.Net;
 using System.IO;
-using JetFistGames.Toml;
+using CowieCLI;
+using Grill.Commands;
 
 namespace Grill
 {
+	public enum GrillResults
+	{
+		Ok = 0,
+		ErrorLoadingConfiguration
+	}
+
 	public static class Program
 	{
-		static void Main(String[] args)
-		{
-			CowieCLI.Init(
-				"""
-				Beef Package Manager
-	
-				USAGE:
-				    grill <command> [options]
-	
-				OPTIONS:
-				    -V, --version   Show the current version of Grill
-				    -v, --verbose   Use verbose output
-				        --list      List all commands
-				    -q, --quiet     Disable output
-				"""
-			);
+		public const String Name = "Grill";
+		public const String Description = "A Beeflang package manager.";
+		public static readonly Version ProgramVersion = .(0, 1, 0, 0);
 
+		static int Main(String[] args)
+		{
+			let cli = scope CowieCLI(Name, Description);
+
+			SetupCommands(cli);
+
+			if (LoadConfiguration() case .Err)
+			{
+				Console.Error.WriteLine("Error loading Grill configuration");
+				return GrillResults.ErrorLoadingConfiguration.Underlying;
+			}
+
+			return cli.Run(args);
+		}
+
+		static void SetupCommands(CowieCLI cli)
+		{
+			cli.RegisterCommand<InstallCommand>("install");
+			cli.RegisterCommand<AddCommand>("add");
+		}
+
+		static Result<void> LoadConfiguration()
+		{
 			Git.Init();
 
 			Config.Load();
 			InstalledPackages.LoadPackageList();
 
-			CowieCLI.RegisterCommand<InstallCommand>("install");
-			CowieCLI.RegisterCommand<AddCommand>("add");
-
-			if (args.Count != 0)
-			{
-				CowieCLI.Run(args);
-			}
-			else
-			{
-				CowieCLI.Help();
-			}
+			return .Ok;
 		}
 	}
 }
