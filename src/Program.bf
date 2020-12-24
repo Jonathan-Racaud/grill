@@ -43,11 +43,6 @@ namespace Grill
 
 		static Result<void> LoadConfiguration()
 		{
-			Git.Init();
-
-			Config.Load();
-			InstalledPackages.LoadPackageList();
-
 			return .Ok;
 		}
 	}

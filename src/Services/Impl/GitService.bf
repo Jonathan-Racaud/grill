@@ -1,14 +1,13 @@
-using CowieCLI;
 using System;
 using System.IO;
 using System.Diagnostics;
-using Grill.Utility;
+using Grill.Services;
 
 namespace Grill
 {
-	public static class Git
+	public class GitService : IRepositoryService
 	{
-		public static String GitPath = new String();
+		/*public static String GitPath = new String();
 		public static String ExePath = new String();
 
 		public static void Init()
@@ -55,6 +54,16 @@ namespace Grill
 		{
 			delete GitPath;
 			delete ExePath;
+		}*/
+
+		public Result<void> Download(String source, String dest)
+		{
+			return .Err;
+		}
+
+		public Result<void> Remove(String dest)
+		{
+			return .Err;
 		}
 	}
 }
