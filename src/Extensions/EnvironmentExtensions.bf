@@ -8,14 +8,14 @@ namespace System
 		{
 			outValue.Set(String.Empty);
 
-			let dict = scope Dictionary<String, String>();
+			let dict = new Dictionary<String, String>();
 
 			Environment.GetEnvironmentVariables(dict);
 
-			if (!dict.ContainsKey(variable))
-				return;
+			if (dict.ContainsKey(variable))
+				outValue.Set(dict[variable]);
 
-			outValue.Set(dict[variable]);
+			DeleteDictionaryAndKeysAndItems!(dict);
 		}
 	}
 }

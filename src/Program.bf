@@ -4,6 +4,9 @@ using System.Reflection;
 using System.Net;
 using System.IO;
 using CowieCLI;
+using Grill.Configuration.Impl;
+using DependencyInjector;
+using Grill.Configuration;
 using Grill.Commands;
 
 namespace Grill
@@ -25,10 +28,10 @@ namespace Grill
 			let cli = scope CowieCLI(Name, Description);
 
 			SetupCommands(cli);
+			SetupDependencyInjection();
 
 			if (LoadConfiguration() case .Err)
 			{
-				Console.Error.WriteLine("Error loading Grill configuration");
 				return GrillResults.ErrorLoadingConfiguration.Underlying;
 			}
 
@@ -37,13 +40,25 @@ namespace Grill
 
 		static void SetupCommands(CowieCLI cli)
 		{
-			cli.RegisterCommand<InstallCommand>("install");
-			cli.RegisterCommand<AddCommand>("add");
+			//cli.RegisterCommand<InstallCommand>("install");
+			//cli.RegisterCommand<AddCommand>("add");
+			cli.RegisterCommand<ConfigurationCommand>("configuration");
+		}
+
+		static void SetupDependencyInjection()
+		{
+			Injector.RegisterSingleton<IConfiguration, Configuration>();
 		}
 
 		static Result<void> LoadConfiguration()
 		{
-			return .Ok;
+			if (Injector.Get<IConfiguration>() case .Ok(let configuration))
+			{
+				return configuration.LoadConfiguration();
+			}
+
+			Console.Error.WriteLine("Error getting configuration");
+			return .Err;
 		}
 	}
 }

@@ -8,8 +8,8 @@ namespace Grill.Configuration.Impl
 	{
 		public const String GLOBAL_DIR_ENV_VAR = "GRILL_GLOBAL_DIR";
 
-		private static String _globalDir = new .() ~ delete _;
-		public static readonly String GlobalDir => _globalDir;
+		private String _globalDir = new .() ~ delete _;
+		public readonly String GlobalDir { get => _globalDir; };
 
 		public Result<void> LoadConfiguration()
 		{
@@ -21,21 +21,6 @@ namespace Grill.Configuration.Impl
 				return .Err;
 			}
 
-			return .Ok;
-		}
-
-		public Result<void> Configure(ConfigurationParameters parameters)
-		{
-			if (parameters.GlobalFolder.IsEmpty)
-			{
-				Console.Error.WriteLine("Error configuring Grill: GRILL_GLOBAL_DIR invalid.");
-				return .Err;
-			}
-
-			var envVars = scope Dictionary<String, String>();
-			_globalDir.Set(parameters.GlobalFolder);
-			Environment.GetEnvironmentVariables(envVars);
-			Environment.SetEnvironmentVariable(envVars, GLOBAL_DIR_ENV_VAR, _globalDir);
 			return .Ok;
 		}
 	}

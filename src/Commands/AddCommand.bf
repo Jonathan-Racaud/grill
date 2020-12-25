@@ -6,7 +6,6 @@ using System.Collections;
 
 namespace Grill.Commands
 {
-	[Reflect, AlwaysInclude(AssumeInstantiated=true, IncludeAllMethods=true)]
 	public class AddCommand : ICommand
 	{
 		private CommandInfo mInfo =
