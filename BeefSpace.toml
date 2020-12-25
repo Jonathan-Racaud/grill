@@ -1,5 +1,5 @@
 FileVersion = 1
-Projects = {Grill = {Path = "."}, CowieCLI = {Path = "../CowieCLI"}}
+Projects = {Grill = {Path = "."}, CowieCLI = {Path = "../CowieCLI"}, DependencyInjector = {Path = "../DependencyInjector"}}
 
 [Workspace]
 StartupProject = "Grill"

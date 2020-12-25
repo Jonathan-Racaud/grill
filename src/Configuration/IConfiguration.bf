@@ -5,10 +5,9 @@ namespace Grill.Configuration
 {
 	public interface IConfiguration
 	{
+		String GlobalDir { get; }
+
 		/// \Brief Loads the configuration
 		Result<void> LoadConfiguration();
-
-		/// \Brief Configure Grill according to the parameters
-		Result<void> Configure(ConfigurationParameters parameters);
 	}
 }

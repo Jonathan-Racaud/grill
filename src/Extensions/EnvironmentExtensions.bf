@@ -4,17 +4,18 @@ namespace System
 {
 	extension Environment
 	{
-		public static String GetEnvironmentVariable(String variable)
+		public static void GetEnvironmentVariable(String variable, String outValue)
 		{
+			outValue.Set(String.Empty);
+
 			let dict = new Dictionary<String, String>();
+
 			Environment.GetEnvironmentVariables(dict);
 
-			if (!dict.ContainsKey(variable))
-				return String.Empty;
+			if (dict.ContainsKey(variable))
+				outValue.Set(dict[variable]);
 
-			var value = new String(dict[variable]);
 			DeleteDictionaryAndKeysAndItems!(dict);
-			return value;
 		}
 	}
 }
