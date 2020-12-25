@@ -6,9 +6,21 @@ namespace Grill.Models
 	[Reflect]
 	public class Package
 	{
-		public String Name = new .() ~ delete _;
-		public String Description = new .() ~ delete _;
-		public List<Package> Dependencies = new .() ~ DeleteContainerAndItems!(_);
+		private String _name = new .() ~ delete _;
+		private String _description = new .() ~ delete _;
+		private List<Package> _dependencies = new .() ~ DeleteContainerAndItems!(_);
+
+		public String Name { get => _name; set => _name.Set(value); };
+		public String Description { get => _description; set => _description.Set(value); };
+		public List<Package> Dependencies
+		{
+			get => _dependencies;
+			set
+			{
+				DeleteContainerAndItems!(_dependencies);
+				_dependencies = new List<Package>(value.GetEnumerator());
+			}
+		}
 
 		public PackageVersion Version = new .() ~ delete _;
 		public Author Author = new .() ~ delete _;
