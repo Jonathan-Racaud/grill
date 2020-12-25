@@ -102,6 +102,7 @@ Name = "InstallCommand.bf"
 [[ProjectFolder.Items]]
 Type = "Folder"
 Name = "Services"
+AutoInclude = true
 
 [[ProjectFolder.Items.Items]]
 Type = "Folder"
