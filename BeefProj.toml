@@ -95,7 +95,7 @@ PreprocessorMacros = ["GRILL_PLATFORM_WINDOWS"]
 [[ProjectFolder.Items]]
 Type = "Folder"
 Name = "Commands"
-Source = ["ConfigurationCommand.bf", "PackageCommand.bf"]
+Source = ["ConfigurationCommand.bf", "PackagesCommand.bf"]
 
 [[ProjectFolder.Items.Items]]
 Type = "IgnoreSource"

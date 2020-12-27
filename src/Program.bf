@@ -45,7 +45,7 @@ namespace Grill
 			//cli.RegisterCommand<InstallCommand>("install");
 			//cli.RegisterCommand<AddCommand>("add");
 			cli.RegisterCommand<ConfigurationCommand>("configuration");
-			cli.RegisterCommand<PackageCommand>("package");
+			cli.RegisterCommand<PackagesCommand>("packages");
 		}
 
 		static void SetupDependencyInjection()

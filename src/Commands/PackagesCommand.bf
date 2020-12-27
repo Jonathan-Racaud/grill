@@ -12,10 +12,10 @@ namespace Grill.Commands
 		Ok = 0
 	}
 
-	public class PackageCommand : ICommand
+	public class PackagesCommand : ICommand
 	{
 		private CommandInfo _info =
-			new CommandInfo("package")
+			new CommandInfo("packages")
 				.About("Manage one or several packages.")
 				.Option(new CommandOption("list", "List all the available packages from the registry.")
 							.Short("l")
@@ -24,7 +24,6 @@ namespace Grill.Commands
 							.Optional())
 				.Option(new CommandOption("find", "Find a specific package from the registry.")
 							.Short("f")
-							.Flag()
 							.ConflictsWith("list")
 							.Optional())
 			~ delete _;
@@ -62,6 +61,12 @@ namespace Grill.Commands
 				Package package;
 				_registryService.GetPackage(Find, out package);
 
+				if (package == default)
+				{
+					Console.WriteLine("Package {} not found", Find);
+					return PackageResults.Ok.Underlying;
+				}
+
 				PrintPackage(package);
 
 				delete package;
@@ -77,6 +82,7 @@ namespace Grill.Commands
 			for (let package in packages)
 			{
 				PrintPackage(package, level);
+				Console.WriteLine(level == 0 ? "============" : "");
 			}
 		}
 
@@ -85,17 +91,17 @@ namespace Grill.Commands
 			let tabs = scope String();
 			for (int i = 0; i < level; i++)
 			{
-				tabs.Append('\t');
+				tabs.Append("  ");
 			}
 
-			Console.WriteLine("{} Package: {}", tabs, package.Name);
-			Console.WriteLine("{} Description: {}", tabs, package.Description);
+			Console.WriteLine("{}Package: {}", tabs, package.Name);
+			Console.WriteLine("{}Description: {}", tabs, package.Description);
 
-			Console.WriteLine("{} Author:");
-			Console.WriteLine("{} \tName: {}", tabs, package.Author.Name);
-			Console.WriteLine("{} \tEmail: {}", tabs, package.Author.Email);
+			Console.WriteLine("{}Author:", tabs);
+			Console.WriteLine("{}  Name: {}", tabs, package.Author.Name);
+			Console.WriteLine("{}  Email: {}", tabs, package.Author.Email);
 
-			Console.WriteLine("{} Dependencies:");
+			Console.WriteLine("{}Dependencies:", tabs);
 			PrintAllPackages(package.Dependencies, level + 1);
 		}
 	}

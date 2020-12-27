@@ -12,7 +12,11 @@ namespace Grill.Services.Impl
 			{
 				new Package() { Name = "Package 1" },
 				new Package() { Name = "Package 2" },
-				new Package() { Name = "Package 3" }
+				new Package()
+				{
+					Name = "Package 3",
+					Dependencies = scope List<Package>() { new Package() { Name = "Dependency 1" } }
+				}
 			};
 
 			return .Ok;
