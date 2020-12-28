@@ -56,9 +56,41 @@ namespace Grill
 			delete ExePath;
 		}*/
 
+		private readonly String GitExePath ~ delete _;
+
+		public this()
+		{
+			String currentDir = scope String();
+			Environment.GetExecutableFilePath(currentDir);
+
+			GitExePath = new String();
+			Path.InternalCombine(GitExePath, currentDir, "bin", "git.exe");
+		}
+
 		public Result<void> Download(String source, String dest)
 		{
-			return .Err;
+			if (!File.Exists(GitExePath))
+				return .Err;
+
+			var gitArgs = scope String();
+			gitArgs.AppendF("-c http.sslVerify=false clone {} {}", source, dest);
+
+			var gitProcessInfo = scope ProcessStartInfo();
+			gitProcessInfo.SetFileName(GitExePath);
+			gitProcessInfo.SetArguments(gitArgs);
+
+			var gitProcess = scope SpawnedProcess();
+
+			if (gitProcess.Start(gitProcessInfo) case .Err)
+				return .Err;
+
+			while (gitProcess.WaitFor() == false)
+				continue;
+
+			if (gitProcess.ExitCode != 0)
+				return .Err;
+
+			return .Ok;
 		}
 
 		public Result<void> Remove(String dest)
