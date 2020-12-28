@@ -3,7 +3,7 @@ using System.IO;
 using System.Diagnostics;
 using Grill.Services;
 
-namespace Grill
+namespace Grill.Services.Impl
 {
 	public class GitService : IRepositoryService
 	{
@@ -61,10 +61,12 @@ namespace Grill
 		public this()
 		{
 			String currentDir = scope String();
-			Environment.GetExecutableFilePath(currentDir);
+			String grillExePath = scope String();
+			Environment.GetExecutableFilePath(grillExePath);
+			Path.GetDirectoryPath(grillExePath, currentDir);
 
 			GitExePath = new String();
-			Path.InternalCombine(GitExePath, currentDir, "bin", "git.exe");
+			Path.InternalCombine(GitExePath, currentDir, "bin", "Git", "bin", "git.exe");
 		}
 
 		public Result<void> Download(String source, String dest)
