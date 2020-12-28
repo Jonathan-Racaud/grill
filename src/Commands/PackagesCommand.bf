@@ -16,6 +16,8 @@ namespace Grill.Commands
 
 	public class PackagesCommand : ICommand
 	{
+		private const String _localLibDir = "beef_libs";
+
 		private CommandInfo _info =
 			new CommandInfo("packages")
 				.About("Manage one or several packages.")
@@ -37,12 +39,17 @@ namespace Grill.Commands
 							.Short("g")
 							.Flag()
 							.Optional())
+				.Option(new CommandOption("delete", "Removes one or more packages.")
+							.Short("d")
+							.List()
+							.Optional())
 			~ delete _;
 		public override CommandInfo Info => _info;
 
 		public bool List = false;
 		public String Find ~ delete _;
 		public List<String> Install = new .() ~ DeleteContainerAndItems!(_);
+		public List<String> Delete = new .() ~ DeleteContainerAndItems!(_);
 		public bool Global = false;
 
 		private IRegistryService _registryService ~ delete _;
@@ -84,6 +91,11 @@ namespace Grill.Commands
 				return InstallPackages();
 			}
 
+			if (!Delete.IsEmpty)
+			{
+				return RemovePackages();
+			}
+
 			return PackageResults.Ok.Underlying;
 		}
 
@@ -119,10 +131,10 @@ namespace Grill.Commands
 
 		private int InstallPackages()
 		{
-			List<Package> packages = scope List<Package>();
+			let packages = scope List<Package>();
 			let dest = scope String();
 
-			RetrievePackages(packages);
+			RetrieveRemotePackages(packages);
 
 			if (!Global)
 			{
@@ -140,7 +152,56 @@ namespace Grill.Commands
 			return PackageResults.Ok.Underlying;
 		}
 
-		private void RetrievePackages(List<Package> packages)
+		private int RemovePackages()
+		{
+			let packagesPath = scope List<String>();
+
+			RetrievePackagesPath(packagesPath);
+
+			for (let packagePath in packagesPath)
+			{
+				_gitService.Remove(packagePath);
+			}
+
+			ClearAndDeleteItems(packagesPath);
+			return PackageResults.Ok.Underlying;
+		}
+
+		private void RetrievePackagesPath(List<String> packagesPath)
+		{
+			let localRepository = scope String();
+
+			if (Global)
+			{
+				localRepository.Set(_configuration.GlobalDir);
+			}
+			else
+			{
+				let currentDir = scope String();
+				Directory.GetCurrentDirectory(currentDir);
+				Path.InternalCombine(localRepository, currentDir, _localLibDir);
+			}
+
+			var dirs = Directory.EnumerateDirectories(localRepository);
+
+			for (let package in Delete)
+			{
+				for (let dir in dirs)
+				{
+					let dirName = scope String();
+					let dirPath = scope String();
+					dir.GetFileName(dirName);
+					dir.GetFilePath(dirPath);
+
+					if (dirName.Equals(package))
+					{
+						Directory.DelTree(dirPath);
+					}
+				}
+			}
+		}
+
+		private void RetrieveRemotePackages(List<Package> packages)
 		{
 			for (let item in Install)
 			{
@@ -162,7 +223,7 @@ namespace Grill.Commands
 			var currentDirectory = scope String();
 			Directory.GetCurrentDirectory(currentDirectory);
 
-			Path.InternalCombine(directory, currentDirectory, "beef_libs");
+			Path.InternalCombine(directory, currentDirectory, _localLibDir);
 
 			if (!Directory.Exists(directory))
 			{
@@ -177,6 +238,13 @@ namespace Grill.Commands
 				let packageFolder = scope String();
 
 				Path.InternalCombine(packageFolder, destFolder, package.Name);
+
+				if (Directory.Exists(packageFolder))
+				{
+					Console.WriteLine("A Package with name {} already exists. Ignoring.", package.Name);
+					continue;
+				}
+
 				if (_gitService.Download(package.Source, packageFolder) case .Err)
 				{
 					Console.Error.WriteLine("Error downloading package {} from source {}", package.Name, package.Source);
