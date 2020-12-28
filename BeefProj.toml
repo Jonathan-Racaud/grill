@@ -20,6 +20,12 @@ PreprocessorMacros = ["GRILL_PLATFORM_WINDOWS"]
 [[Configs.Debug.Win64.DistinctOptions]]
 Filter = "Grill.Commands.*"
 ReflectAlwaysInclude = "IncludeAll"
+ReflectNonStaticFields = true
+ReflectConstructors = true
+
+[[Configs.Debug.Win64.DistinctOptions]]
+Filter = "Grill.Services.*"
+ReflectAlwaysInclude = "IncludeAll"
 ReflectConstructors = true
 
 [Configs.Debug.Win32]
@@ -89,7 +95,7 @@ PreprocessorMacros = ["GRILL_PLATFORM_WINDOWS"]
 [[ProjectFolder.Items]]
 Type = "Folder"
 Name = "Commands"
-Source = ["ConfigurationCommand.bf"]
+Source = ["ConfigurationCommand.bf", "PackagesCommand.bf"]
 
 [[ProjectFolder.Items.Items]]
 Type = "IgnoreSource"
@@ -103,11 +109,3 @@ Name = "InstallCommand.bf"
 Type = "Folder"
 Name = "Services"
 AutoInclude = true
-
-[[ProjectFolder.Items.Items]]
-Type = "Folder"
-Name = "Impl"
-
-[[ProjectFolder.Items.Items.Items]]
-Type = "IgnoreSource"
-Name = "GitService.bf"

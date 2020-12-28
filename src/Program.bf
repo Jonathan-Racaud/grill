@@ -4,10 +4,12 @@ using System.Reflection;
 using System.Net;
 using System.IO;
 using CowieCLI;
-using Grill.Configuration.Impl;
 using DependencyInjector;
-using Grill.Configuration;
 using Grill.Commands;
+using Grill.Configuration;
+using Grill.Configuration.Impl;
+using Grill.Services;
+using Grill.Services.Impl;
 
 namespace Grill
 {
@@ -43,11 +45,13 @@ namespace Grill
 			//cli.RegisterCommand<InstallCommand>("install");
 			//cli.RegisterCommand<AddCommand>("add");
 			cli.RegisterCommand<ConfigurationCommand>("configuration");
+			cli.RegisterCommand<PackagesCommand>("packages");
 		}
 
 		static void SetupDependencyInjection()
 		{
 			Injector.RegisterSingleton<IConfiguration, Configuration>();
+			Injector.Register<IRegistryService, DummyRegistryService>();
 		}
 
 		static Result<void> LoadConfiguration()
