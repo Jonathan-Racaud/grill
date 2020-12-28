@@ -11,10 +11,10 @@ ProductVersion = "0.0.1"
 
 [Configs.Debug.Win64]
 BeefLibType = "Static"
-BuildCommandsOnCompile = "Never"
+BuildCommandsOnCompile = "IfFilesChanged"
 BuildCommandsOnRun = "Never"
-PostBuildCmds = ["xcopy \"$(ProjectDir)/bin\" \"$(TargetDir)\" /e /c /i /q /y"]
-DebugCommandArguments = "package -l"
+PostBuildCmds = ["xcopy $(TargetDir)\\$(ProjectName).exe $(ProjectDir)\\bin /y"]
+DebugCommandArguments = "packages -i JSON_Beef"
 PreprocessorMacros = ["GRILL_PLATFORM_WINDOWS"]
 
 [[Configs.Debug.Win64.DistinctOptions]]

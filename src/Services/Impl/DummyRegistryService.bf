@@ -24,7 +24,7 @@ namespace Grill.Services.Impl
 
 		public Result<void> GetPackage(String name, out Package package)
 		{
-			package = new Package() { Name = name };
+			package = new Package() { Name = "JSON_Beef", Source = "https://github.com/Jonathan-Racaud/JSON_Beef.git" };
 
 			return .Ok;
 		}

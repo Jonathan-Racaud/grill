@@ -52,6 +52,7 @@ namespace Grill
 		{
 			Injector.RegisterSingleton<IConfiguration, Configuration>();
 			Injector.Register<IRegistryService, DummyRegistryService>();
+			Injector.Register<IRepositoryService, GitService>();
 		}
 
 		static Result<void> LoadConfiguration()
